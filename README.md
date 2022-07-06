@@ -20,3 +20,9 @@ To create dependencies between projects
 ```
 dotnet add OrderFood.Api/ reference OrderFood.Contracts/
 ```
+
+To generate a secret into dev environment
+```
+dotnet user-secrets init --project OrderFood.Api
+dotnet user-secrets set --project OrderFood.Api "JwtSettings:SecretKey" "super-secret-key-from-super"
+```
