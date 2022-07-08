@@ -1,5 +1,5 @@
 # clean-architecture-order-food
-This is a simple project intended to test clean architecture concepts.
+This is a simple project intended to practice clean architecture concepts.
 
 All credits to https://www.youtube.com/c/AmichaiMantinband
 
@@ -13,7 +13,8 @@ dotnet run --project OrderFood.Api/
 To create a new sln file:
 
 ```
-dotnet new sln --name OrderFood.sln
+dotnet new sln --name OrderFood
+dotnet sln add OrderFood.Api/OrderFood.Api.csproj
 ```
 
 To create dependencies between projects
