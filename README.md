@@ -1,5 +1,5 @@
-# clean-architecture-order-food
-This is a simple project intended to practice clean architecture concepts.
+# Invite to a dinner - clean architecture concepts
+This is a simple project intended to practice clean architecture concepts with **dotnet core**.
 
 All credits to https://www.youtube.com/c/AmichaiMantinband
 
