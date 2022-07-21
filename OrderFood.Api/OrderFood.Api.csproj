@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderFood.Contracts\OrderFood.Contracts.csproj" />
-    <ProjectReference Include="..\OrderFood.Application\OrderFood.Application.csproj" />
-    <ProjectReference Include="..\OrderFood.Infrastructure\OrderFood.Infrastructure.csproj" />
+    <ProjectReference Include="../OrderFood.Contracts/OrderFood.Contracts.csproj" />
+    <ProjectReference Include="../OrderFood.Application/OrderFood.Application.csproj" />
+    <ProjectReference Include="../OrderFood.Infrastructure/OrderFood.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

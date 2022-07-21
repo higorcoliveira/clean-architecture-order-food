@@ -1,6 +1,8 @@
 
+using ErrorOr;
 using OrderFood.Application.Common.Interfaces.Authentication;
 using OrderFood.Application.Common.Interfaces.Persistence;
+using OrderFood.Domain.Common.Errors;
 using OrderFood.Domain.Entities;
 
 namespace OrderFood.Application.Services.Authentication;
@@ -16,11 +18,11 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public AuthenticationResult Register(string firstName, string lastName, string email, string password)
+    public ErrorOr<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
     {
         if (_userRepository.GetUserByEmail(email) is not null)
         {
-            throw new Exception("User already registered.");
+            return Errors.User.DuplicateEmail;
         }
 
         var user = new User { FirstName = firstName, LastName = lastName, Email = email, Password = password };
@@ -30,16 +32,16 @@ public class AuthenticationService : IAuthenticationService
         return new AuthenticationResult(user, token);
     }
 
-    public AuthenticationResult Login(string email, string password)
+    public ErrorOr<AuthenticationResult> Login(string email, string password)
     {
         if (_userRepository.GetUserByEmail(email) is not User user)
         {
-            throw new Exception("User does not exist.");
+            return Errors.Authentication.InvalidCredentials;
         }
 
         if (user.Password != password)
         {
-            throw new Exception("Invalid credentials.");
+            return Errors.Authentication.InvalidCredentials;
         }
         var token = _tokenGenerator.GenerateToken(user);
 

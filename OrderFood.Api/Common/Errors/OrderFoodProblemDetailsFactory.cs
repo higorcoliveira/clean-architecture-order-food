@@ -1,10 +1,11 @@
 using System.Diagnostics;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
-namespace OrderFood.Api.Controllers;
+namespace OrderFood.Api.Common.Errors;
 
 // Error handling way 3: Redirect http path
 public class OrderFoodProblemDetailsFactory : ProblemDetailsFactory
@@ -88,6 +89,10 @@ public class OrderFoodProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions["traceId"] = traceId;
         }
 
-        problemDetails.Extensions.Add("customProperty", "customValue");
+        var errors = context?.Items["errors"] as List<Error>;
+        if (errors is not null)
+        {
+            problemDetails.Extensions.Add("errorCodes", errors.Select(s => s.Code));
+        }
     }
 }

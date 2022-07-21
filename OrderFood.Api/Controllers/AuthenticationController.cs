@@ -1,13 +1,13 @@
 
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood.Contracts.Authentication;
 using OrderFood.Application.Services.Authentication;
 
 namespace OrderFood.Api.Controllers;
 
-[ApiController]
 [Route("auth")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController : ApiController
 {
     private readonly IAuthenticationService _authService;
 
@@ -19,30 +19,33 @@ public class AuthenticationController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register(RegisterRequest request)
     {
-        var authResult = _authService.Register(request.FirstName, request.LastName, request.Email, request.Password);
-        var response = new AuthenticationResponse(
-            authResult.User.Id,
-            authResult.User.FirstName,
-            authResult.User.LastName,
-            authResult.User.Email,
-            authResult.Token
-        );
+        ErrorOr<AuthenticationResult> authResult = _authService.Register(request.FirstName, request.LastName, request.Email, request.Password);
 
-        return Ok(response);
+        return authResult.Match(
+            autResult => Ok(MapResponse(autResult)),
+            errors => Problem(errors)
+        );
     }
 
     [HttpPost("login")]
     public IActionResult Login(LoginRequest login)
     {
-        var authResult = _authService.Login(login.Email, login.Password);
-        var response = new AuthenticationResponse(
+        ErrorOr<AuthenticationResult> authResult = _authService.Login(login.Email, login.Password);
+
+        return authResult.Match(
+           autResult => Ok(MapResponse(autResult)),
+           errors => Problem(errors)
+        );
+    }
+
+    private static AuthenticationResponse MapResponse(AuthenticationResult authResult)
+    {
+        return new AuthenticationResponse(
             authResult.User.Id,
             authResult.User.FirstName,
             authResult.User.LastName,
             authResult.User.Email,
             authResult.Token
         );
-
-        return Ok(response);
     }
 }
