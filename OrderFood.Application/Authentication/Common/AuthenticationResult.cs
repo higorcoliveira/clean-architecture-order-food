@@ -1,6 +1,6 @@
 using OrderFood.Domain.Entities;
 
-namespace OrderFood.Application.Services.Authentication;
+namespace OrderFood.Application.Authentication.Common;
 
 public record AuthenticationResult(
     User User,

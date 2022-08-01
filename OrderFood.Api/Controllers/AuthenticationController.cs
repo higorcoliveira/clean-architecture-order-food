@@ -1,25 +1,29 @@
 
 using ErrorOr;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood.Contracts.Authentication;
-using OrderFood.Application.Services.Authentication;
+using OrderFood.Application.Authentication.Commands.Register;
+using OrderFood.Application.Authentication.Commands.Login;
+using OrderFood.Application.Authentication.Common;
 
 namespace OrderFood.Api.Controllers;
 
 [Route("auth")]
 public class AuthenticationController : ApiController
 {
-    private readonly IAuthenticationService _authService;
+    private readonly ISender _mediator;
 
-    public AuthenticationController(IAuthenticationService authService)
+    public AuthenticationController(IMediator mediator)
     {
-        _authService = authService;
+        _mediator = mediator;
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        ErrorOr<AuthenticationResult> authResult = _authService.Register(request.FirstName, request.LastName, request.Email, request.Password);
+        var command = new RegisterCommand(request.FirstName, request.LastName, request.Email, request.Password);
+        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
 
         return authResult.Match(
             autResult => Ok(MapResponse(autResult)),
@@ -28,9 +32,10 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest login)
+    public async Task<IActionResult> Login(LoginRequest login)
     {
-        ErrorOr<AuthenticationResult> authResult = _authService.Login(login.Email, login.Password);
+        var query = new LoginQuery(login.Email, login.Password);
+        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(query);
 
         return authResult.Match(
            autResult => Ok(MapResponse(autResult)),
